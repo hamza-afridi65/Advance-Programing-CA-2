@@ -1,0 +1,90 @@
+{
+  "Records": [
+    {
+      "eventVersion": "1.05",
+      "userIdentity": {
+        "type": "IAMUser",
+        "userName": "netops"
+      },
+      "eventTime": "2024-12-12T12:00:00Z",
+      "eventSource": "ec2.amazonaws.com",
+      "eventName": "AuthorizeSecurityGroupIngress",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "198.51.100.5",
+      "requestParameters": {
+        "groupId": "sg-0123456789abcdef0",
+        "ipPermissions": [
+          {
+            "ipProtocol": "tcp",
+            "fromPort": 22,
+            "toPort": 22,
+            "ipRanges": [
+              {
+                "cidrIp": "0.0.0.0/0"
+              }
+            ]
+          }
+        ]
+      },
+      "eventID": "evt-5"
+    },
+    {
+      "eventVersion": "1.05",
+      "userIdentity": {
+        "type": "IAMUser",
+        "userName": "storage-admin"
+      },
+      "eventTime": "2024-12-12T12:10:00Z",
+      "eventSource": "s3.amazonaws.com",
+      "eventName": "PutBucketAcl",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "198.51.100.20",
+      "requestParameters": {
+        "bucketName": "my-sensitive-bucket",
+        "AccessControlPolicy": {
+          "Grants": [
+            {
+              "Grantee": {
+                "URI": "http://acs.amazonaws.com/groups/global/AllUsers"
+              },
+              "Permission": "READ"
+            }
+          ]
+        }
+      },
+      "eventID": "evt-6"
+    },
+    {
+      "eventVersion": "1.05",
+      "userIdentity": {
+        "type": "IAMUser",
+        "userName": "kms-admin"
+      },
+      "eventTime": "2024-12-12T12:20:00Z",
+      "eventSource": "kms.amazonaws.com",
+      "eventName": "DisableKey",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.50",
+      "requestParameters": {
+        "keyId": "1234abcd-12ab-34cd-56ef-1234567890ab"
+      },
+      "eventID": "evt-7"
+    },
+    {
+      "eventVersion": "1.05",
+      "userIdentity": {
+        "type": "IAMUser",
+        "userName": "audit-admin"
+      },
+      "eventTime": "2024-12-12T12:30:00Z",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventName": "StopLogging",
+      "awsRegion": "us-east-1",
+      "sourceIPAddress": "203.0.113.51",
+      "requestParameters": {
+        "name": "MscSecurityTrail"
+      },
+      "eventID": "evt-8"
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AWS CloudTrail Threat Detection Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="app-header-left">
+        <div class="shield-icon">
+          <!-- simple shield icon using SVG -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2l7 3v6.5c0 4.7-3 8.9-7 10.5-4-1.6-7-5.8-7-10.5V5l7-3z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="app-title">AWS CloudTrail Threat Detection</h1>
+          <p class="app-subtitle">
+            Real-time analysis of CloudTrail logs with intelligent threat detection and alerting.
+          </p>
+        </div>
+      </div>
+
+      <div class="app-header-right">
+        <span class="live-badge">
+          <span class="live-dot"></span>
+          Live
+        </span>
+        <div class="env-info">
+          <span class="env-label">Environment:</span>
+          <span class="env-value">Dev / Demo</span>
+          <span class="env-divider">·</span>
+          <span class="env-label">Last updated:</span>
+          <span class="env-value" id="last-updated">--</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Controls / Filters -->
+    <section class="controls-bar">
+      <div class="btn-group">
+        <button id="scan-local-btn" class="btn primary">
+          <span class="btn-icon">📂</span>
+          Scan Local Logs
+        </button>
+        <button id="scan-s3-btn" class="btn ghost">
+          <span class="btn-icon">☁️</span>
+          Scan AWS S3 Logs
+        </button>
+      </div>
+
+      <div class="filters-group">
+        <span class="filters-label">Filters:</span>
+
+        <div class="filter-pill">
+          <span class="filter-pill-label">Severity</span>
+          <select id="severity-filter">
+            <option value="">All Severity</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+
+        <div class="filter-pill">
+          <span class="filter-pill-label">Time</span>
+          <select id="hours-filter">
+            <option value="">All Time</option>
+            <option value="1">Last 1 hour</option>
+            <option value="6">Last 6 hours</option>
+            <option value="24">Last 24 hours</option>
+            <option value="72">Last 72 hours</option>
+          </select>
+        </div>
+
+        <button id="apply-filters-btn" class="btn tiny primary">
+          Apply
+        </button>
+        <button id="reset-filters-btn" class="btn tiny subtle">
+          Reset
+        </button>
+      </div>
+    </section>
+
+    <p id="scan-result" class="scan-result">No scans run yet.</p>
+
+    <!-- Summary Cards -->
+    <section class="summary-grid">
+      <article class="summary-card neutral">
+        <div class="summary-header">
+          <h3>Total Alerts</h3>
+          <div class="summary-icon neutral-icon">⚡</div>
+        </div>
+        <p id="total-alerts" class="summary-value">0</p>
+        <p class="summary-caption">All alerts currently stored in the system.</p>
+      </article>
+
+      <article class="summary-card critical">
+        <div class="summary-header">
+          <h3>Critical / High</h3>
+          <div class="summary-icon critical-icon">🛑</div>
+        </div>
+        <p id="high-alerts" class="summary-value">0</p>
+        <p class="summary-caption">Requires immediate attention.</p>
+      </article>
+
+      <article class="summary-card medium">
+        <div class="summary-header">
+          <h3>Medium</h3>
+          <div class="summary-icon medium-icon">⚠️</div>
+        </div>
+        <p id="medium-alerts" class="summary-value">0</p>
+        <p class="summary-caption">Potentially risky behaviour.</p>
+      </article>
+
+      <article class="summary-card low">
+        <div class="summary-header">
+          <h3>Low</h3>
+          <div class="summary-icon low-icon">✅</div>
+        </div>
+        <p id="low-alerts" class="summary-value">0</p>
+        <p class="summary-caption">Informational events.</p>
+      </article>
+    </section>
+
+    <!-- Alert Table -->
+    <section class="table-card">
+      <div class="table-header">
+        <div class="table-header-left">
+          <span class="table-dot"></span>
+          <h2>Alert List</h2>
+          <span class="table-count">( <span id="alert-count">0</span> total )</span>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="alerts-table">
+          <thead>
+            <tr>
+              <th>Rule</th>
+              <th>Severity</th>
+              <th>User</th>
+              <th>Source IP</th>
+              <th>Event</th>
+              <th>Region</th>
+              <th>Time</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Alerts inserted by JS -->
+          </tbody>
+        </table>
+
+        <div class="table-footer">
+        <div class="rows-per-page">
+          <label>
+            Rows per page:
+            <select id="rows-per-page">
+              <option value="25">25</option>
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="pagination">
+          <button id="page-prev" class="page-btn" aria-label="Previous page">
+            ‹
+          </button>
+          <span id="pagination-pages"></span>
+          <button id="page-next" class="page-btn" aria-label="Next page">
+            ›
+          </button>
+        </div>
+
+        <div class="pagination-info" id="pagination-info">
+          <!-- Filled dynamically, e.g. 'Showing 1–50 of 111' -->
+        </div>
+      </div>
+
+
+      </div>
+
+    </section>
+    
+
+  </div>
+
+  <!-- Scan Overlay -->
+  <div id="scan-overlay" class="scan-overlay hidden">
+    <div class="scan-overlay-content">
+      <div class="scan-spinner"></div>
+      <p class="scan-overlay-text">Scanning CloudTrail logs...</p>
+      <p class="scan-overlay-subtext">Analyzing events and updating threat model.</p>
+    </div>
+  </div>
+
+  <!-- Details Modal -->
+  <div id="details-modal" class="modal hidden">
+    <div class="modal-content">
+      <span id="modal-close" class="modal-close">&times;</span>
+      <h3>Alert Details</h3>
+
+      <!-- Evidence JSON -->
+      <pre id="modal-json" class="modal-json"></pre>
+
+      <!-- Playbook -->
+      <pre id="modal-playbook" class="modal-playbook hidden"></pre>
+    </div>
+  </div>
+
+  <script src="static/js/main.js"></script>
+</body>
+</html>

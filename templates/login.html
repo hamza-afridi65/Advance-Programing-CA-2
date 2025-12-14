@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - CloudTrail Threat Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="login-body">
+
+  <div class="login-container">
+    <div class="login-card">
+      <h1 class="login-title">SOC Dashboard Login</h1>
+      <p class="login-subtitle">Authenticate to access CloudTrail Threat Detection.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="login-flash">
+            {% for category, msg in messages %}
+              <div class="flash flash-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" class="login-form">
+        <label>Username</label>
+        <input name="username" type="text" required placeholder="admin"/>
+
+        <label>Password</label>
+        <input name="password" type="password" required placeholder="••••••••"/>
+
+        <button type="submit" class="login-btn">Sign in</button>
+      </form>
+
+      <div class="login-hint">
+        <small>Tip: credentials are read from your <code>.env</code> file.</small>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
